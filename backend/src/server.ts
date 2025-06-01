@@ -3,9 +3,9 @@ import express from 'express';
 import "dotenv/config";
 
 
-// dotenv.config();
+// dotenv.config();                  
 
-import authRoutes from "./routes/auth.route.js";
+import authRoutes from "./routes/auth.route";
 
 const app = express();
 const PORT = process.env.PORT;
