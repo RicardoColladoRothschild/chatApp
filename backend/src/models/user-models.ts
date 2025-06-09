@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, model } from 'mongoose';
 import {IUser} from './user-model-interface'
-
+import bcrypt from 'bcryptjs';
 const userSchema = new Schema<IUser>({
     fullname: {
         type: String,
@@ -46,5 +46,18 @@ const userSchema = new Schema<IUser>({
 
 const User = mongoose.models.User || model<IUser>('User', userSchema);
 
+
+userSchema.pre("save", async function(next){
+    try{
+         if (!this.isModified("password")) return next();
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+    
+        next();
+    }catch(error){
+        console.error("[X] - Error occurred while encrypting user password: ", error);
+        throw new Error('Unable to encrypt password.');
+    }
+})
 
 export default User;
